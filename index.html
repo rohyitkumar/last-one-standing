@@ -1,0 +1,1077 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Last One Standing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0c111d; --bg2:#131a2a; --card:#182134; --line:#26324a; --ink:#f4f6fb; --muted:#9aa6bf; --dim:#64708a;
+  --accent:#ff6b35; --accent2:#ffd166; --good:#21c47b; --bad:#ef4566;
+  --A:#ef476f; --B:#3a86ff; --C:#f4b400; --D:#13b38a;
+  --radius:16px;
+  --display:'Bricolage Grotesque',system-ui,sans-serif;
+  --body:'Inter',system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);-webkit-font-smoothing:antialiased}
+body{min-height:100vh;min-height:100dvh}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+a{color:var(--accent2)}
+.wrap{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
+.brand{font-family:var(--display);font-weight:800;letter-spacing:-.02em;display:flex;align-items:center;gap:10px}
+.brand .dot{width:14px;height:14px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px rgba(255,107,53,.25)}
+h1,h2,h3{font-family:var(--display);letter-spacing:-.02em;margin:0}
+.muted{color:var(--muted)}
+.small{font-size:13px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px}
+.row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.spacer{flex:1}
+.btn{border:0;border-radius:12px;padding:12px 18px;font-weight:700;text-decoration:none;color:var(--ink);background:var(--line);transition:transform .08s,filter .15s}
+.btn:hover{filter:brightness(1.15)}
+.btn:active{transform:scale(.98)}
+.btn.primary{background:var(--accent);color:#1a0b04}
+.btn.big{font-size:20px;padding:16px 28px;border-radius:14px}
+.btn.ghost{background:transparent;border:1px solid var(--line)}
+.btn.danger{background:transparent;border:1px solid rgba(239,69,102,.5);color:#ff8aa1}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+label.field{display:block;margin-bottom:12px}
+label.field span{display:block;font-size:13px;color:var(--muted);margin-bottom:6px;font-weight:600}
+input[type=text],input[type=number],select,textarea{width:100%;background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:12px 14px;outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--accent)}
+textarea{min-height:220px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;line-height:1.5}
+.banner{border-radius:12px;padding:10px 14px;font-size:14px;background:rgba(255,209,102,.1);border:1px solid rgba(255,209,102,.35);color:#ffe3a3}
+.banner.err{background:rgba(239,69,102,.1);border-color:rgba(239,69,102,.4);color:#ffb3c1}
+.pill{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:6px 12px;font-size:13px;font-weight:700;background:var(--line)}
+.pill.good{background:rgba(33,196,123,.15);color:#6ff0b0}
+.pill.bad{background:rgba(239,69,102,.15);color:#ff8aa1}
+.pill.warn{background:rgba(255,209,102,.15);color:var(--accent2)}
+.hide{display:none!important}
+
+/* ===== Setup ===== */
+.grid2{display:grid;grid-template-columns:1.3fr 1fr;gap:18px}
+@media(max-width:860px){.grid2{grid-template-columns:1fr}}
+.sets{display:grid;gap:10px}
+.set{display:flex;gap:12px;align-items:flex-start;padding:14px;border-radius:14px;border:1px solid var(--line);background:var(--bg2);cursor:pointer}
+.set.sel{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset}
+.set input{margin-top:4px;accent-color:var(--accent)}
+.set .t{font-weight:700}
+.set .acts{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.set .acts button{font-size:12px;padding:6px 10px;border-radius:8px}
+.qlist{max-height:380px;overflow:auto;margin-top:10px;display:grid;gap:8px}
+.qitem{background:var(--bg2);border-radius:10px;padding:10px 12px;font-size:14px}
+.qitem ol{margin:6px 0 0;padding-left:20px;color:var(--muted)}
+.qitem li.ok{color:var(--good);font-weight:700}
+.seg{display:flex;background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:4px;gap:4px}
+.seg button{flex:1;border:0;background:transparent;border-radius:9px;padding:8px 6px;font-weight:700;color:var(--muted)}
+.seg button.on{background:var(--accent);color:#1a0b04}
+.toggle{display:flex;align-items:center;gap:10px;margin:10px 0;font-size:14px}
+.toggle input{width:18px;height:18px;accent-color:var(--accent)}
+.rules{margin:0;padding-left:20px;line-height:1.6}
+.rules li{margin-bottom:4px}
+.modal{position:fixed;inset:0;background:rgba(5,8,15,.75);display:flex;align-items:flex-start;justify-content:center;padding:24px 16px;overflow:auto;z-index:20}
+.modal .card{width:100%;max-width:760px}
+pre.fmt{background:var(--bg2);border-radius:10px;padding:10px 12px;font-size:12px;overflow:auto;color:#cfd6e6;margin:6px 0 12px}
+
+/* ===== Stage (host big screen) ===== */
+.stage{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;padding:18px clamp(16px,3vw,40px) 22px}
+.topbar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:14px}
+.topbar .pin{font-family:var(--display);font-weight:800;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px 14px;font-size:18px}
+.topbar .pin b{color:var(--accent2);letter-spacing:.08em}
+.stagebody{flex:1;display:flex;flex-direction:column;justify-content:center;gap:22px}
+.controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:14px}
+.lobby{display:grid;grid-template-columns:auto 1fr;gap:clamp(18px,4vw,56px);align-items:center}
+@media(max-width:860px){.lobby{grid-template-columns:1fr}}
+.joinbox{background:#fff;color:#0c111d;border-radius:22px;padding:22px;text-align:center;min-width:280px}
+.joinbox .lbl{font-weight:700;color:#5b6478;font-size:15px}
+.joinbox .url{font-weight:700;font-size:16px;word-break:break-all;margin:4px 0 12px}
+.joinbox .bigpin{font-family:var(--display);font-weight:800;font-size:clamp(48px,7vw,84px);letter-spacing:.06em;line-height:1}
+.joinbox #qr{display:flex;justify-content:center;margin:14px 0 4px}
+.joinbox #qr img,.joinbox #qr canvas{width:220px;height:220px}
+.count{font-family:var(--display);font-weight:800;font-size:clamp(72px,12vw,160px);line-height:.9}
+.chips{display:flex;flex-wrap:wrap;gap:8px;max-height:34vh;overflow:hidden;margin-top:14px}
+.chip{background:var(--card);border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-weight:600;font-size:15px;animation:pop .25s ease-out}
+.chip button{background:none;border:0;color:var(--dim);margin-left:4px;padding:0}
+@keyframes pop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+.qhead{display:flex;align-items:center;gap:18px}
+.qnum{font-family:var(--display);font-weight:800;color:var(--accent2);font-size:20px}
+.qtext{font-family:var(--display);font-weight:800;font-size:clamp(28px,4.2vw,56px);line-height:1.08}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.opt{position:relative;display:flex;align-items:center;gap:16px;border-radius:18px;padding:clamp(14px,2vw,24px);font-weight:700;font-size:clamp(18px,2.2vw,30px);color:#fff;overflow:hidden;min-height:clamp(70px,10vh,120px)}
+.opt .sh{flex:none;width:clamp(38px,4vw,54px);height:clamp(38px,4vw,54px);border-radius:12px;background:rgba(0,0,0,.18);display:grid;place-items:center;font-size:clamp(18px,2vw,26px)}
+.opt.A{background:var(--A)}.opt.B{background:var(--B)}.opt.C{background:var(--C);color:#231a00}.opt.D{background:var(--D)}
+.opt .bar{position:absolute;left:0;bottom:0;height:8px;background:rgba(255,255,255,.65);width:0;transition:width .8s ease-out}
+.opt .cnt{margin-left:auto;font-family:var(--display);font-size:clamp(20px,2.4vw,34px)}
+.opt.fade{opacity:.28;filter:saturate(.4)}
+.opt.win{outline:5px solid #fff;outline-offset:3px}
+.timer{position:relative;width:96px;height:96px;flex:none}
+.timer svg{transform:rotate(-90deg)}
+.timer .sec{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:34px}
+.meter{display:flex;align-items:center;gap:14px;font-weight:700;font-size:18px}
+.meter .track{flex:1;height:14px;background:var(--card);border-radius:99px;overflow:hidden}
+.meter .fill{height:100%;background:var(--accent2);width:0;transition:width .3s}
+.statrow{display:flex;gap:16px;flex-wrap:wrap}
+.stat{flex:1;min-width:180px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px 20px}
+.stat .v{font-family:var(--display);font-weight:800;font-size:clamp(40px,6vw,76px);line-height:1}
+.stat .l{color:var(--muted);font-weight:600;margin-top:6px}
+.stat.out .v{color:var(--bad)}.stat.alive .v{color:var(--good)}
+.fact{background:rgba(255,209,102,.08);border:1px solid rgba(255,209,102,.3);border-radius:16px;padding:14px 18px;font-size:clamp(16px,1.6vw,22px)}
+.fact b{color:var(--accent2)}
+.save{background:linear-gradient(90deg,rgba(33,196,123,.25),rgba(33,196,123,.05));border:1px solid rgba(33,196,123,.5);border-radius:16px;padding:14px 18px;font-weight:700;font-size:clamp(18px,2vw,26px)}
+.names{display:flex;flex-wrap:wrap;gap:8px}
+.names span{background:rgba(33,196,123,.15);color:#8ff5c4;border-radius:999px;padding:6px 12px;font-weight:700}
+.final{text-align:center}
+.trophy{font-size:clamp(64px,10vw,120px);line-height:1}
+.winner{font-family:var(--display);font-weight:800;font-size:clamp(44px,8vw,110px);line-height:1;margin:10px 0;color:var(--accent2)}
+.wlist{display:grid;gap:8px;max-width:640px;margin:16px auto 0;text-align:left}
+.wlist div{display:flex;gap:12px;background:var(--card);border-radius:12px;padding:10px 14px;font-weight:700;font-size:20px}
+.wlist div span:last-child{margin-left:auto;color:var(--muted);font-weight:600}
+
+/* ===== Player (phone) ===== */
+.phone{max-width:520px;margin:0 auto;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;padding:16px 16px calc(20px + env(safe-area-inset-bottom))}
+.phone header{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.phone header .me{margin-left:auto;font-weight:700;font-size:14px;color:var(--muted);max-width:50%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pbody{flex:1;display:flex;flex-direction:column;gap:14px}
+.center{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:12px}
+.hero{font-family:var(--display);font-weight:800;font-size:44px;line-height:1.02}
+.ptext{font-family:var(--display);font-weight:800;font-size:22px;line-height:1.2}
+.pbar{height:8px;background:var(--card);border-radius:9px;overflow:hidden}
+.pbar i{display:block;height:100%;background:var(--accent2);width:100%}
+.popts{display:grid;gap:10px}
+.popt{display:flex;align-items:center;gap:12px;border:0;border-radius:14px;padding:16px 14px;text-align:left;font-weight:700;font-size:17px;color:#fff;min-height:64px}
+.popt .sh{flex:none;width:36px;height:36px;border-radius:10px;background:rgba(0,0,0,.2);display:grid;place-items:center}
+.popt.A{background:var(--A)}.popt.B{background:var(--B)}.popt.C{background:var(--C);color:#231a00}.popt.D{background:var(--D)}
+.popt.dim{opacity:.25}
+.popt.picked{outline:4px solid #fff;outline-offset:2px}
+.popt:disabled{cursor:default}
+.result{border-radius:20px;padding:26px 18px;text-align:center}
+.result.safe{background:rgba(33,196,123,.14);border:1px solid rgba(33,196,123,.5)}
+.result.out{background:rgba(239,69,102,.14);border:1px solid rgba(239,69,102,.5)}
+.result.neutral{background:var(--card);border:1px solid var(--line)}
+.result .big{font-family:var(--display);font-weight:800;font-size:46px;line-height:1}
+.ans{background:var(--card);border-radius:14px;padding:12px 14px;font-weight:600}
+.ans b{color:var(--good)}
+.joinform{max-width:420px;width:100%;margin:0 auto}
+.pininput{text-align:center;font-family:var(--display);font-weight:800;font-size:34px!important;letter-spacing:.2em}
+.footer-link{text-align:center;margin-top:18px;font-size:13px}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script type="module">
+/* =========================================================================
+   LAST ONE STANDING — live elimination quiz for big rooms
+   -------------------------------------------------------------------------
+   1) Paste your Firebase web config below (see README) to run a real event.
+   2) Leave it as null to run in DEMO mode (works across tabs in one browser).
+   ========================================================================= */
+const firebaseConfig = {
+  apiKey: "AIzaSyC7pauJCewmooqZTF9SyHccgqLovf38mtQ",
+  authDomain: "last-one-standing-6cf54.firebaseapp.com",
+  databaseURL: "https://last-one-standing-6cf54-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "last-one-standing-6cf54",
+  storageBucket: "last-one-standing-6cf54.firebasestorage.app",
+  messagingSenderId: "657574344580",
+  appId: "1:657574344580:web:09ab4e13763f60de644fd1"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+/* Example:
+const FIREBASE_CONFIG = {
+  apiKey: "AIza...",
+  authDomain: "your-project.firebaseapp.com",
+  databaseURL: "https://your-project-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "your-project",
+  appId: "1:123:web:abc"
+};
+*/
+const ROOT = 'los';
+const FB_VERSION = '10.12.2';
+
+/* ===================== Built-in question sets ===================== */
+const BUILTIN_SETS = [
+{
+  id:'ca-oct-2026', builtin:true,
+  name:'Current Affairs · Oct 2026',
+  desc:'Banking, economy, politics, sport and Nobel prizes from 2026. Checked against news sources on 23 Oct 2026.',
+  questions:[
+    {q:'In October 2026, the RBI raised the repo rate to what level?',o:['5.25%','5.50%','5.75%','6.00%'],a:1,f:'The MPC raised the repo rate by 25 bps to 5.50% on 7 Oct 2026.'},
+    {q:'Which policy stance did the RBI MPC adopt in October 2026?',o:['Accommodative','Neutral','Calibrated tightening','Withdrawal of accommodation'],a:2,f:'The stance moved from neutral to calibrated tightening as inflation rose.'},
+    {q:'Who chaired the RBI’s October 2026 policy meeting as Governor?',o:['Shaktikanta Das','Sanjay Malhotra','Michael Patra','Urjit Patel'],a:1,f:'Sanjay Malhotra is the RBI Governor.'},
+    {q:'Which group won Cabinet approval in Oct 2026 to buy a controlling stake in IDBI Bank?',o:['Emirates NBD','Sumitomo Mitsui','Fairfax Financial Holdings','Kotak Mahindra'],a:2,f:'The deal is worth about ₹52,878 crore and still needs RBI clearance.'},
+    {q:'What fiscal deficit target did Union Budget 2026-27 set for FY27?',o:['3.9% of GDP','4.3% of GDP','4.8% of GDP','5.1% of GDP'],a:1,f:'Down from 4.4% in FY26 (revised estimate). The Budget was presented on 1 Feb 2026.'},
+    {q:'From which date did the new Income Tax Act, 2025 take effect?',o:['1 January 2026','1 April 2026','1 October 2026','1 April 2027'],a:1,f:'Tax slabs were unchanged in Budget 2026-27, but the new Act replaced the 1961 law from 1 April 2026.'},
+    {q:'India hosted the AI Impact Summit in February 2026. Which declaration did it adopt?',o:['Bletchley Declaration','Seoul Declaration','New Delhi Declaration','Paris Action Statement'],a:2,f:'It was endorsed by 88 countries and international organisations.'},
+    {q:'Which country won the FIFA World Cup 2026?',o:['Argentina','France','Spain','Brazil'],a:2,f:'Spain beat Argentina 1–0 after extra time on 19 July 2026: their second title after 2010.'},
+    {q:'At which stadium was the FIFA World Cup 2026 final played?',o:['Estadio Azteca','MetLife Stadium','SoFi Stadium','Rose Bowl'],a:1,f:'MetLife Stadium, New Jersey. 2026 was the first 48-team World Cup.'},
+    {q:'Which team did India beat in the 2026 Men’s T20 World Cup final?',o:['Australia','England','South Africa','New Zealand'],a:3,f:'India won by 96 runs at the Narendra Modi Stadium, Ahmedabad, on 8 March 2026.'},
+    {q:'How many Men’s T20 World Cup titles has India now won?',o:['One','Two','Three','Four'],a:2,f:'2007, 2024 and 2026.'},
+    {q:'Who was Player of the Tournament at the 2026 Men’s T20 World Cup?',o:['Sanju Samson','Jasprit Bumrah','Suryakumar Yadav','Abhishek Sharma'],a:0,f:'Samson scored 321 runs. Bumrah was Player of the Match in the final.'},
+    {q:'Which team won IPL 2026?',o:['Gujarat Titans','Mumbai Indians','Chennai Super Kings','Royal Challengers Bengaluru'],a:3,f:'RCB beat Gujarat Titans by 5 wickets to defend their title.'},
+    {q:'Where were the 2026 Asian Games held?',o:['Hangzhou, China','Doha, Qatar','Aichi-Nagoya, Japan','Jakarta, Indonesia'],a:2,f:'19 September – 4 October 2026.'},
+    {q:'How many medals did India win at the 2026 Asian Games?',o:['62','70','85','107'],a:2,f:'21 gold, 27 silver, 37 bronze: fourth on the medal table.'},
+    {q:'Which city will host the 2030 Asian Games?',o:['Riyadh','Doha','Seoul','New Delhi'],a:1,f:'Doha, Qatar.'},
+    {q:'Which city hosted the 2026 Commonwealth Games?',o:['Birmingham','Gold Coast','Glasgow','Victoria'],a:2,f:'Glasgow, Scotland, 23 July – 2 August 2026.'},
+    {q:'Which Indian city will host the 2030 Commonwealth Games?',o:['Ahmedabad','New Delhi','Bhubaneswar','Hyderabad'],a:0,f:'Ahmedabad, Gujarat.'},
+    {q:'Who won the men’s singles title at Wimbledon 2026?',o:['Carlos Alcaraz','Novak Djokovic','Jannik Sinner','Alexander Zverev'],a:2,f:'Sinner beat Zverev for his second straight Wimbledon title.'},
+    {q:'Who won the 2026 Nobel Peace Prize?',o:['Volodymyr Zelensky','Navi Pillay','Greta Thunberg','António Guterres'],a:1,f:'South African jurist of Indian Tamil origin, former UN High Commissioner for Human Rights.'},
+    {q:'Who won the 2026 Nobel Prize in Literature?',o:['Anne Carson','Haruki Murakami','Margaret Atwood','Salman Rushdie'],a:0,f:'Canadian poet, essayist and translator.'},
+    {q:'The 2026 Nobel Prize in Physics honoured work on what?',o:['Quantum computers','High-energy neutrinos from space','Gravitational waves','Dark matter maps'],a:1,f:'Francis Halzen led IceCube, a neutrino detector built into Antarctic ice.'},
+    {q:'The 2026 Nobel Prize in Medicine was awarded for which technique?',o:['mRNA vaccines','CRISPR gene editing','Optogenetics','Stem-cell reprogramming'],a:2,f:'Deisseroth, Hegemann and Nagel: switching neurons on and off with light.'},
+    {q:'Who shared the 2026 Nobel Prize in Economics?',o:['Banerjee & Duflo','Hall & Woodford','Acemoglu & Robinson','Bernanke & Diamond'],a:1,f:'Robert Hall and Michael Woodford, for the micro foundations of macroeconomic stabilisation.'},
+    {q:'Who became West Bengal’s first BJP Chief Minister in May 2026?',o:['Dilip Ghosh','Sukanta Majumdar','Suvendu Adhikari','Samik Bhattacharya'],a:2,f:'Sworn in on 9 May 2026.'},
+    {q:'Vijay became Tamil Nadu Chief Minister in May 2026. Which party does he lead?',o:['DMK','AIADMK','PMK','TVK'],a:3,f:'Tamilaga Vettri Kazhagam (TVK).'},
+    {q:'Who was sworn in as Chief Minister of Kerala (Keralam) in May 2026?',o:['Pinarayi Vijayan','V.D. Satheesan','Shashi Tharoor','K.C. Venugopal'],a:1,f:'The Congress-led UDF returned to power after 10 years.'},
+  ]
+},
+{
+  id:'warmup', builtin:true,
+  name:'Warm-up round (5 easy)',
+  desc:'A quick practice game so the room learns how it works before the real one.',
+  questions:[
+    {q:'What does “KYC” stand for?',o:['Keep Your Cash','Know Your Customer','Key Yield Check','Know Your Credit'],a:1,f:'KYC checks verify who a customer is.'},
+    {q:'Which body regulates banks in India?',o:['SEBI','IRDAI','RBI','NABARD'],a:2,f:'The Reserve Bank of India.'},
+    {q:'UPI stands for…',o:['Unified Payments Interface','Universal Pay Index','United Payment Instrument','Unified Private Interface'],a:0,f:'Built and run by NPCI.'},
+    {q:'Which of these should you NEVER share with anyone, even bank staff?',o:['Account type','Branch name','OTP','IFSC code'],a:2,f:'Banks never ask for your OTP, PIN or CVV.'},
+    {q:'What is the capital of India?',o:['Mumbai','New Delhi','Kolkata','Bengaluru'],a:1,f:'An easy one to finish the warm-up!'},
+  ]
+}];
+
+/* ===================== Small helpers ===================== */
+const $ = (s, r = document) => r.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const mkStore = area => ({
+  get(k, d){ try{ const v = area().getItem(k); return v == null ? d : JSON.parse(v); }catch{ return d; } },
+  set(k, v){ try{ area().setItem(k, JSON.stringify(v)); }catch{} },
+  del(k){ try{ area().removeItem(k); }catch{} },
+});
+const LS = mkStore(() => localStorage);
+const SS = mkStore(() => sessionStorage);
+const LETTERS = ['A','B','C','D'];
+const SHAPES = ['▲','◆','●','■'];
+const fmtSec = ms => (ms/1000).toFixed(1) + 's';
+const shuffle = a => { const b = a.slice(); for (let i = b.length - 1; i > 0; i--){ const j = Math.floor(Math.random()*(i+1)); [b[i], b[j]] = [b[j], b[i]]; } return b; };
+const app = $('#app');
+const params = new URLSearchParams(location.search);
+let store;
+
+/* ===================== Data layer ===================== */
+// DEMO: a tiny realtime store on localStorage. Each browser tab is a separate player.
+function makeDemoStore(){
+  const KEY = 'los_demo_db_v1';
+  let uid = SS.get('los_demo_uid', null);
+  if (!uid){ uid = 'u' + Math.random().toString(36).slice(2, 10); SS.set('los_demo_uid', uid); }
+  const TS = {'.sv':'timestamp'};
+  const read = () => LS.get(KEY, {}) || {};
+  const parts = p => p.split('/').filter(Boolean);
+  const getIn = (o, ps) => { for (const k of ps){ if (o == null || typeof o !== 'object') return null; o = o[k]; } return o === undefined ? null : o; };
+  const resolve = v => {
+    if (v && typeof v === 'object'){
+      if (v['.sv'] === 'timestamp') return Date.now();
+      const o = Array.isArray(v) ? [] : {};
+      for (const k in v) o[k] = resolve(v[k]);
+      return o;
+    }
+    return v;
+  };
+  const setIn = (o, ps, v) => {
+    let cur = o;
+    for (let i = 0; i < ps.length - 1; i++){
+      if (cur[ps[i]] == null || typeof cur[ps[i]] !== 'object') cur[ps[i]] = {};
+      cur = cur[ps[i]];
+    }
+    const last = ps[ps.length - 1];
+    if (v == null) delete cur[last]; else cur[last] = v;
+    return o;
+  };
+  const listeners = new Set();
+  const notify = () => {
+    const db = read();
+    for (const l of listeners){
+      const v = getIn(db, parts(l.path));
+      const s = JSON.stringify(v);
+      if (s !== l.last){ l.last = s; try{ l.cb(v == null ? null : JSON.parse(s)); }catch(e){ console.error(e); } }
+    }
+  };
+  addEventListener('storage', e => { if (e.key === KEY) notify(); });
+  const api = {
+    mode:'demo', uid, TS, now: () => Date.now(),
+    async get(p){ return getIn(read(), parts(p)); },
+    async set(p, v){ const db = read(); setIn(db, parts(p), resolve(v)); LS.set(KEY, db); notify(); },
+    async update(obj){ const db = read(); for (const p in obj) setIn(db, parts(p), resolve(obj[p])); LS.set(KEY, db); notify(); },
+    async remove(p){ return api.set(p, null); },
+    on(p, cb){ const l = {path:p, cb, last:undefined}; listeners.add(l); setTimeout(notify, 0); return () => listeners.delete(l); },
+  };
+  return api;
+}
+
+// LIVE: Firebase Realtime Database + anonymous sign-in.
+async function makeFirebaseStore(cfg){
+  const base = `https://www.gstatic.com/firebasejs/${FB_VERSION}`;
+  const [{initializeApp}, D, A] = await Promise.all([
+    import(`${base}/firebase-app.js`), import(`${base}/firebase-database.js`), import(`${base}/firebase-auth.js`)
+  ]);
+  const fapp = initializeApp(cfg);
+  const db = D.getDatabase(fapp);
+  const auth = A.getAuth(fapp);
+  await A.signInAnonymously(auth);
+  let offset = 0;
+  D.onValue(D.ref(db, '.info/serverTimeOffset'), s => { offset = s.val() || 0; });
+  return {
+    mode:'firebase', uid: auth.currentUser.uid, TS: D.serverTimestamp(), now: () => Date.now() + offset,
+    async get(p){ return (await D.get(D.ref(db, p))).val(); },
+    set: (p, v) => D.set(D.ref(db, p), v),
+    update: o => D.update(D.ref(db), o),
+    remove: p => D.remove(D.ref(db, p)),
+    on(p, cb){ return D.onValue(D.ref(db, p), s => cb(s.val()), e => console.error(p, e)); },
+  };
+}
+
+/* ===================== Question import ===================== */
+function parseText(txt){
+  const blocks = String(txt || '').replace(/\r/g, '').split(/\n\s*\n/).map(b => b.trim()).filter(Boolean);
+  const qs = [], errs = [];
+  blocks.forEach((b, bi) => {
+    const lines = b.split('\n').map(l => l.trim()).filter(Boolean);
+    let q = '', opts = [], ans = -1, fact = '', answerText = null;
+    for (const l of lines){
+      let m;
+      if ((m = l.match(/^(?:answer|ans|correct)\s*[:\-]\s*(.+)$/i))){ answerText = m[1].trim(); continue; }
+      if ((m = l.match(/^(?:fact|note|explanation|why)\s*[:\-]\s*(.+)$/i))){ fact = m[1].trim(); continue; }
+      if ((m = l.match(/^\(?([A-Da-d])[\).:]\s*(.+)$/))){
+        let t = m[2].trim();
+        if (/(\*|\(correct\))\s*$/i.test(t)){ t = t.replace(/\s*(\*|\(correct\))\s*$/i, ''); ans = opts.length; }
+        opts.push(t); continue;
+      }
+      if (!opts.length){ q += (q ? ' ' : '') + l.replace(/^(?:Q(?:uestion)?\s*\d*\s*[:.)\-]\s*|\d+\s*[.)]\s*)/i, ''); continue; }
+      opts[opts.length - 1] += ' ' + l; // wrapped option line
+    }
+    if (answerText != null){
+      const L = answerText.match(/^\(?([A-Da-d])\)?(?:[\).:\s]|$)/);
+      if (L) ans = 'abcd'.indexOf(L[1].toLowerCase());
+      else ans = opts.findIndex(o => o.toLowerCase() === answerText.toLowerCase());
+    }
+    const label = q ? `“${q.slice(0, 50)}${q.length > 50 ? '…' : ''}”` : `Block ${bi + 1}`;
+    if (!q) errs.push(`${label}: missing question text`);
+    else if (opts.length < 2) errs.push(`${label}: needs at least 2 options written as A) … B) …`);
+    else if (opts.length > 4) errs.push(`${label}: has ${opts.length} options (max 4)`);
+    else if (ans < 0 || ans >= opts.length) errs.push(`${label}: mark the right answer with * or add “Answer: B”`);
+    else qs.push({q, o:opts, a:ans, f:fact});
+  });
+  return {qs, errs};
+}
+function parseCSVRows(text){
+  const rows = []; let row = [], cell = '', inQ = false;
+  text = String(text || '').replace(/^﻿/, '');
+  for (let i = 0; i < text.length; i++){
+    const c = text[i];
+    if (inQ){
+      if (c === '"'){ if (text[i+1] === '"'){ cell += '"'; i++; } else inQ = false; }
+      else cell += c;
+    } else if (c === '"') inQ = true;
+    else if (c === ','){ row.push(cell); cell = ''; }
+    else if (c === '\n' || c === '\r'){ if (c === '\r' && text[i+1] === '\n') i++; row.push(cell); rows.push(row); row = []; cell = ''; }
+    else cell += c;
+  }
+  if (cell !== '' || row.length){ row.push(cell); rows.push(row); }
+  return rows.filter(r => r.some(x => String(x).trim() !== ''));
+}
+function parseCSV(text){
+  const rows = parseCSVRows(text); const qs = [], errs = [];
+  rows.forEach((r, i) => {
+    r = r.map(x => String(x).trim());
+    if (i === 0 && /question/i.test(r[0])) return;
+    const q = r[0], opts = r.slice(1, 5).filter(Boolean), a = (r[5] || '').trim(), f = r[6] || '';
+    let ans = -1;
+    if (/^[A-Da-d]$/.test(a)) ans = 'abcd'.indexOf(a.toLowerCase());
+    else if (/^[1-4]$/.test(a)) ans = +a - 1;
+    else ans = opts.findIndex(o => o.toLowerCase() === a.toLowerCase());
+    if (!q) errs.push(`Row ${i + 1}: missing question`);
+    else if (opts.length < 2) errs.push(`Row ${i + 1}: needs at least 2 options`);
+    else if (ans < 0 || ans >= opts.length) errs.push(`Row ${i + 1}: answer “${a}” should be A, B, C or D`);
+    else qs.push({q, o:opts, a:ans, f});
+  });
+  return {qs, errs};
+}
+function toText(qs){
+  return qs.map(x => [x.q, ...x.o.map((o, i) => `${LETTERS[i]}) ${o}`), `Answer: ${LETTERS[x.a]}`, x.f ? `Fact: ${x.f}` : ''].filter(Boolean).join('\n')).join('\n\n');
+}
+const CSV_TEMPLATE = 'question,option_a,option_b,option_c,option_d,answer,fact\n' +
+  '"Which body regulates banks in India?",SEBI,RBI,IRDAI,NABARD,B,"The Reserve Bank of India."\n' +
+  '"UPI is operated by…",RBI,NPCI,SBI,SEBI,B,"National Payments Corporation of India."\n';
+
+function downloadText(name, text, type = 'text/csv'){
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([text], {type}));
+  a.download = name; document.body.appendChild(a); a.click();
+  setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+}
+
+const demoBanner = () => store.mode === 'demo'
+  ? `<div class="banner small" style="margin-bottom:14px"><b>Demo mode.</b> Works across tabs in this one browser so you can try it. For a real event, add your Firebase config (see README).</div>` : '';
+
+const RULES_HTML = `
+<ol class="rules">
+  <li>Join on your phone by scanning the QR code or entering the game PIN. Use your real name.</li>
+  <li>Everyone starts <b>IN</b>. Each question has a countdown.</li>
+  <li>Answer correctly before time runs out to survive. A wrong answer or no answer means you’re <b>OUT</b>.</li>
+  <li><b>Mass save:</b> if every remaining player gets a question wrong, nobody is eliminated that round.</li>
+  <li>Out? Keep playing in <b>Crowd mode</b>. Your answers count towards the room’s score.</li>
+  <li>The game ends when only the target number of players are left, or the questions run out.</li>
+  <li>If several players are still standing, the <b>fastest total answer time</b> ranks them.</li>
+</ol>`;
+
+/* =========================================================================
+   PLAYER
+   ========================================================================= */
+const Player = {
+  pin:null, name:'', st:null, me:null, answered:{}, unsubs:[], everJoined:false, timer:null, err:'',
+  keep(){ return store.mode === 'demo' ? SS : LS; },
+  init(pinParam){
+    const saved = this.keep().get('los_player', null);
+    if (saved && (!pinParam || pinParam === saved.pin)) this.rejoin(saved);
+    else this.renderJoin(pinParam || '');
+  },
+  async rejoin(saved){
+    try{
+      const p = await store.get(`${ROOT}/${saved.pin}/players/${store.uid}`);
+      const st = await store.get(`${ROOT}/${saved.pin}/state`);
+      if (p && st){ this.pin = saved.pin; this.name = p.n; this.answered = this.keep().get('los_answered_' + saved.pin, {}); return this.enter(); }
+    }catch(e){ console.error(e); }
+    this.keep().del('los_player');
+    this.renderJoin(saved.pin);
+  },
+  renderJoin(pin, err = ''){
+    app.innerHTML = `
+    <div class="phone">
+      <header><div class="brand"><span class="dot"></span>Last One Standing</div></header>
+      ${demoBanner()}
+      <div class="center">
+        <div class="joinform">
+          <div class="hero" style="margin-bottom:6px">Join the game</div>
+          <p class="muted" style="margin:0 0 20px">Enter the PIN on the big screen.</p>
+          ${err ? `<div class="banner err" style="margin-bottom:12px">${esc(err)}</div>` : ''}
+          <label class="field"><span>Game PIN</span><input id="jpin" class="pininput" type="text" inputmode="numeric" maxlength="6" autocomplete="off" value="${esc(pin)}" placeholder="000000"></label>
+          <label class="field"><span>Your name</span><input id="jname" type="text" maxlength="24" autocomplete="name" placeholder="First name + last initial" value="${esc(this.name)}"></label>
+          <button class="btn primary big" style="width:100%" id="jgo">Join</button>
+        </div>
+      </div>
+      <div class="footer-link muted"><a href="?host">Host a game</a></div>
+    </div>`;
+    const go = () => this.join($('#jpin').value.replace(/\D/g, ''), $('#jname').value.trim().replace(/\s+/g, ' '));
+    $('#jgo').onclick = go;
+    $('#jname').onkeydown = e => { if (e.key === 'Enter') go(); };
+    (pin ? $('#jname') : $('#jpin')).focus();
+  },
+  async join(pin, name){
+    if (pin.length !== 6) return this.renderJoin(pin, 'The PIN has 6 digits.');
+    if (!name) return this.renderJoin(pin, 'Please enter your name.');
+    this.name = name;
+    $('#jgo').disabled = true; $('#jgo').textContent = 'Joining…';
+    try{
+      const st = await store.get(`${ROOT}/${pin}/state`);
+      if (!st) return this.renderJoin(pin, 'No game found with that PIN.');
+      if (st.phase === 'final') return this.renderJoin(pin, 'That game has already finished.');
+      const existing = await store.get(`${ROOT}/${pin}/players/${store.uid}`);
+      if (!existing) await store.set(`${ROOT}/${pin}/players/${store.uid}`, {n:name, j:store.TS});
+      else this.name = existing.n;
+      this.pin = pin;
+      this.keep().set('los_player', {pin, name:this.name});
+      this.enter();
+    }catch(e){ console.error(e); this.renderJoin(pin, 'Could not join. Check your connection and try again.'); }
+  },
+  enter(){
+    const base = `${ROOT}/${this.pin}`;
+    this.unsubs.forEach(u => u()); this.unsubs = [];
+    this.unsubs.push(store.on(`${base}/state`, st => { this.st = st; this.render(); }));
+    this.unsubs.push(store.on(`${base}/players/${store.uid}`, me => {
+      if (me) this.everJoined = true;
+      this.me = me; this.render();
+    }));
+    clearInterval(this.timer);
+    this.timer = setInterval(() => this.tick(), 200);
+  },
+  remaining(){
+    const st = this.st; if (!st || st.phase !== 'question' || typeof st.startedAt !== 'number') return 0;
+    return Math.max(0, st.startedAt + st.duration * 1000 - store.now());
+  },
+  tick(){
+    const bar = $('#ptime'); if (!bar || !this.st) return;
+    const rem = this.remaining();
+    bar.style.width = (100 * rem / (this.st.duration * 1000)) + '%';
+    const s = $('#psec'); if (s) s.textContent = Math.ceil(rem / 1000);
+    if (rem <= 0 && this.st.phase === 'question' && !this.timeUp){ this.timeUp = true; this.render(); }
+  },
+  status(){
+    const me = this.me || {};
+    if (me.alive === true) return 'alive';
+    if (me.late) return 'late';
+    if (me.alive === false) return 'out';
+    return 'waiting';
+  },
+  async answer(i){
+    const st = this.st; if (!st || st.phase !== 'question' || this.answered[st.qKey] != null || this.remaining() <= 0) return;
+    this.answered[st.qKey] = i;
+    this.keep().set('los_answered_' + this.pin, this.answered);
+    this.render();
+    try{
+      await store.set(`${ROOT}/${this.pin}/answers/${st.qKey}/${store.uid}`, {c:i, at:store.TS});
+    }catch(e){
+      console.error(e);
+      this.lateMsg = st.qKey;
+      this.render();
+    }
+  },
+  header(){
+    const s = this.status();
+    const pill = s === 'alive' ? '<span class="pill good">● IN</span>' : s === 'out' ? '<span class="pill bad">OUT · crowd mode</span>' : s === 'late' ? '<span class="pill warn">Joined late · for fun</span>' : '';
+    return `<header><div class="brand"><span class="dot"></span>LOS</div>${pill}<span class="me">${esc(this.name)}</span></header>`;
+  },
+  render(){
+    if (this._raf) return;
+    this._raf = requestAnimationFrame(() => { this._raf = null; this.draw(); });
+  },
+  draw(){
+    if (this.everJoined && !this.me){
+      this.keep().del('los_player');
+      app.innerHTML = `<div class="phone"><div class="center"><div class="hero">Removed</div><p class="muted">The host removed you from this game.</p><button class="btn primary" onclick="location.reload()">Join again</button></div></div>`;
+      return;
+    }
+    const st = this.st;
+    if (!st){ app.innerHTML = `<div class="phone">${this.header()}<div class="center muted">Connecting…</div></div>`; return; }
+    let body = '';
+    if (st.phase === 'lobby'){
+      body = `<div class="center">
+        <div class="hero">You’re in!</div>
+        <p class="muted" style="font-size:17px;margin:0">Look up at the big screen.<br>The game starts soon.</p>
+        ${st.joined ? `<span class="pill">${st.joined} players joined</span>` : ''}
+        <details class="card small" style="text-align:left;margin-top:12px"><summary style="cursor:pointer;font-weight:700">How it works</summary>${RULES_HTML}</details>
+      </div>`;
+    } else if (st.phase === 'question' || st.phase === 'locked'){
+      const mine = this.answered[st.qKey];
+      if (st.phase === 'question' && this.remaining() > 0) this.timeUp = false;
+      const closed = st.phase === 'locked' || this.remaining() <= 0;
+      const s = this.status();
+      let note;
+      if (this.lateMsg === st.qKey) note = '<div class="banner err">Too late. That answer didn’t reach the game in time.</div>';
+      else if (mine != null) note = `<div class="ans">Locked in: <b>${LETTERS[mine]}</b>. Waiting for the reveal…</div>`;
+      else if (closed) note = `<div class="ans">Time’s up!</div>`;
+      else note = s === 'alive' ? `<div class="muted small">Answer correctly to survive.</div>` : `<div class="muted small">You’re in crowd mode. Answer for fun!</div>`;
+      body = `
+        <div class="row"><span class="qnum">Q${st.qNum} / ${st.total}</span><span class="spacer"></span><span class="pill" id="psec">${Math.ceil(this.remaining()/1000)}</span></div>
+        <div class="pbar"><i id="ptime"></i></div>
+        <div class="ptext">${esc(st.q?.text)}</div>
+        <div class="popts">${(st.q?.opts || []).map((o, i) => `
+          <button class="popt ${LETTERS[i]} ${mine != null ? (mine === i ? 'picked' : 'dim') : (closed ? 'dim' : '')}" data-i="${i}" ${mine != null || closed ? 'disabled' : ''}>
+            <span class="sh">${SHAPES[i]}</span><span>${esc(o)}</span></button>`).join('')}
+        </div>${note}`;
+    } else if (st.phase === 'reveal'){
+      const mine = this.answered[st.qKey];
+      const right = mine === st.correct;
+      const stats = st.stats || {};
+      const me = this.me || {};
+      const wasAlive = me.alive === true || me.out === st.qNum;
+      let card;
+      if (wasAlive){
+        const elim = me.out === st.qNum || (!right && !stats.massSave);
+        if (elim) card = `<div class="result out"><div class="big">OUT</div><p style="margin:10px 0 0">${mine == null ? 'No answer in time.' : 'Not this time.'} Stay and play in crowd mode!</p></div>`;
+        else if (!right && stats.massSave) card = `<div class="result safe"><div class="big">SAVED!</div><p style="margin:10px 0 0">Nobody got that one, so everyone stays in.</p></div>`;
+        else card = `<div class="result safe"><div class="big">SAFE ✓</div><p style="margin:10px 0 0">You’re still standing.</p></div>`;
+      } else {
+        card = `<div class="result neutral"><div class="big" style="font-size:34px">${mine == null ? 'No answer' : right ? 'You got it ✓' : 'Missed it ✗'}</div><p class="muted" style="margin:10px 0 0">Crowd mode</p></div>`;
+      }
+      body = `<span class="qnum">Q${st.qNum} / ${st.total}</span>${card}
+        <div class="ans">Answer: <b>${LETTERS[st.correct]}) ${esc(st.q?.opts?.[st.correct])}</b></div>
+        ${st.fact ? `<div class="fact" style="font-size:15px">${esc(st.fact)}</div>` : ''}
+        <div class="center" style="flex:0"><span class="pill good">${stats.aliveAfter ?? '–'} still standing</span></div>`;
+    } else if (st.phase === 'final'){
+      const me = this.me || {};
+      const winners = st.winners || [];
+      const rank = winners.findIndex(w => w.id === store.uid);
+      let card;
+      if (me.alive === true) card = `<div class="result safe"><div class="big">🏆</div><div class="hero" style="margin-top:6px">${(st.winnerCount || 0) === 1 ? 'You won!' : 'You’re a winner!'}</div>${rank >= 0 && st.winnerCount > 1 ? `<p style="margin:8px 0 0">Ranked #${rank + 1} by speed</p>` : ''}</div>`;
+      else if (me.late) card = `<div class="result neutral"><div class="hero">Thanks for playing!</div></div>`;
+      else card = `<div class="result neutral"><div class="hero">Game over</div><p class="muted" style="margin:8px 0 0">You lasted until question ${me.out ?? '–'}.</p></div>`;
+      body = `<div class="center">${card}
+        ${winners.length ? `<div style="width:100%"><p class="muted small" style="margin:12px 0 6px">Winners</p>${winners.slice(0, 10).map((w, i) => `<div class="ans" style="margin-bottom:6px">${i + 1}. ${esc(w.n)}</div>`).join('')}</div>` : ''}
+      </div>`;
+    }
+    app.innerHTML = `<div class="phone">${this.header()}<div class="pbody">${body}</div></div>`;
+    app.querySelectorAll('.popt[data-i]').forEach(b => b.onclick = () => this.answer(+b.dataset.i));
+    this.tick();
+  },
+};
+
+/* =========================================================================
+   HOST
+   ========================================================================= */
+const Host = {
+  settings: Object.assign({timer:15, stopAt:1, maxQ:0, shuffle:true, earlyEnd:true}, LS.get('los_settings', {})),
+  setId: LS.get('los_set', 'ca-oct-2026'),
+  session:null, st:null, players:{}, answers:{}, unsubs:[], ansUnsub:null, raf:null, busy:false,
+
+  customSets(){ return LS.get('los_custom_sets', []); },
+  allSets(){ return [...this.customSets(), ...BUILTIN_SETS]; },
+  currentSet(){ return this.allSets().find(s => s.id === this.setId) || BUILTIN_SETS[0]; },
+  saveSettings(){ LS.set('los_settings', this.settings); LS.set('los_set', this.setId); },
+
+  async init(){
+    const sess = LS.get('los_host_session', null);
+    if (sess){
+      try{
+        const owner = await store.get(`${ROOT}/${sess.pin}/hostUid`);
+        const st = await store.get(`${ROOT}/${sess.pin}/state`);
+        if (owner === store.uid && st) this.resumable = sess;
+      }catch(e){ console.error(e); }
+    }
+    this.renderSetup();
+  },
+
+  /* ---------- Setup screen ---------- */
+  renderSetup(){
+    const sets = this.allSets(); const cur = this.currentSet(); const s = this.settings;
+    const seg = (key, vals, fmt) => `<div class="seg" data-key="${key}">${vals.map(v => `<button data-v="${v}" class="${s[key] === v ? 'on' : ''}">${fmt(v)}</button>`).join('')}</div>`;
+    app.innerHTML = `
+    <div class="wrap">
+      <div class="row" style="margin-bottom:18px"><div class="brand" style="font-size:24px"><span class="dot"></span>Last One Standing</div><span class="pill">Host</span></div>
+      ${demoBanner()}
+      ${this.resumable ? `<div class="banner" style="margin-bottom:14px"><div class="row"><span>You have a game in progress (PIN <b>${esc(this.resumable.pin)}</b>).</span><span class="spacer"></span><button class="btn primary" id="resume">Resume it</button><button class="btn ghost" id="discard">Discard</button></div></div>` : ''}
+      <div class="grid2">
+        <div class="card">
+          <div class="row" style="margin-bottom:12px"><h2>1. Pick a question set</h2><span class="spacer"></span><button class="btn ghost" id="addset">+ Add your own set</button></div>
+          <div class="sets">${sets.map(x => `
+            <div class="set ${x.id === cur.id ? 'sel' : ''}" data-id="${esc(x.id)}">
+              <input type="radio" name="set" ${x.id === cur.id ? 'checked' : ''}>
+              <div style="flex:1">
+                <div class="t">${esc(x.name)} <span class="muted small">· ${x.questions.length} questions</span></div>
+                ${x.desc ? `<div class="muted small" style="margin-top:3px">${esc(x.desc)}</div>` : ''}
+                <div class="acts">
+                  ${x.builtin ? `<button class="btn ghost" data-act="copy">Copy &amp; edit</button>` : `<button class="btn ghost" data-act="edit">Edit</button><button class="btn danger" data-act="del">Delete</button>`}
+                </div>
+              </div>
+            </div>`).join('')}
+          </div>
+          <details style="margin-top:14px"><summary style="cursor:pointer;font-weight:700">Review “${esc(cur.name)}” (answers shown, host only)</summary>
+            <div class="qlist">${cur.questions.map((q, i) => `<div class="qitem"><b>${i + 1}. ${esc(q.q)}</b><ol type="A">${q.o.map((o, j) => `<li class="${j === q.a ? 'ok' : ''}">${esc(o)}</li>`).join('')}</ol>${q.f ? `<div class="muted small" style="margin-top:4px">${esc(q.f)}</div>` : ''}</div>`).join('')}</div>
+          </details>
+        </div>
+        <div style="display:grid;gap:18px;align-content:start">
+          <div class="card">
+            <h2 style="margin-bottom:14px">2. Settings</h2>
+            <label class="field"><span>Seconds per question</span>${seg('timer', [10, 15, 20, 30], v => v + 's')}</label>
+            <label class="field"><span>End the game when players left are at or below</span>${seg('stopAt', [1, 3, 5, 10], v => v)}</label>
+            <label class="field"><span>Questions to use</span>${seg('maxQ', [0, 10, 15, 20], v => v ? v : 'All')}</label>
+            <label class="toggle"><input type="checkbox" id="shuffle" ${s.shuffle ? 'checked' : ''}> Shuffle question order</label>
+            <label class="toggle"><input type="checkbox" id="early" ${s.earlyEnd ? 'checked' : ''}> Reveal early once every survivor has answered</label>
+            <button class="btn primary big" style="width:100%;margin-top:8px" id="create">Create game</button>
+          </div>
+          <div class="card"><h3 style="margin-bottom:8px">Rules (shown to players)</h3>${RULES_HTML}</div>
+        </div>
+      </div>
+    </div>`;
+    app.querySelectorAll('.seg').forEach(g => g.querySelectorAll('button').forEach(b => b.onclick = () => { this.settings[g.dataset.key] = +b.dataset.v; this.saveSettings(); this.renderSetup(); }));
+    $('#shuffle').onchange = e => { this.settings.shuffle = e.target.checked; this.saveSettings(); };
+    $('#early').onchange = e => { this.settings.earlyEnd = e.target.checked; this.saveSettings(); };
+    app.querySelectorAll('.set').forEach(el => el.onclick = e => {
+      const id = el.dataset.id; const act = e.target.closest('[data-act]')?.dataset.act;
+      const set = this.allSets().find(x => x.id === id);
+      if (act === 'del'){ if (confirm(`Delete “${set.name}”?`)){ LS.set('los_custom_sets', this.customSets().filter(x => x.id !== id)); if (this.setId === id) this.setId = BUILTIN_SETS[0].id; this.saveSettings(); this.renderSetup(); } return; }
+      if (act === 'edit') return this.openEditor(set);
+      if (act === 'copy') return this.openEditor({name: set.name + ' (my copy)', questions: set.questions});
+      this.setId = id; this.saveSettings(); this.renderSetup();
+    });
+    $('#addset').onclick = () => this.openEditor(null);
+    $('#create').onclick = () => this.createGame();
+    if (this.resumable){
+      $('#resume').onclick = () => { this.session = this.resumable; this.attach(); };
+      $('#discard').onclick = () => { LS.del('los_host_session'); this.resumable = null; this.renderSetup(); };
+    }
+  },
+
+  openEditor(set){
+    const m = document.createElement('div'); m.className = 'modal';
+    m.innerHTML = `<div class="card">
+      <div class="row" style="margin-bottom:12px"><h2>${set?.id ? 'Edit question set' : 'Add your own question set'}</h2><span class="spacer"></span><button class="btn ghost" id="ex">Close</button></div>
+      <label class="field"><span>Set name</span><input type="text" id="en" maxlength="60" value="${esc(set?.name || '')}" placeholder="e.g. Fraud awareness – Nov batch"></label>
+      <label class="field"><span>Paste questions (blank line between questions)</span>
+      <textarea id="et" spellcheck="false" placeholder="Which body regulates banks in India?
+A) SEBI
+B) RBI *
+C) IRDAI
+D) NABARD
+Fact: Optional line shown after the reveal.">${esc(set ? toText(set.questions) : '')}</textarea></label>
+      <pre class="fmt">Mark the right option with *  — or add a line “Answer: B”.
+2 to 4 options per question. “Fact:” line is optional.</pre>
+      <div class="row" style="margin-bottom:12px">
+        <label class="btn ghost" style="display:inline-block">Upload CSV<input type="file" id="ef" accept=".csv,text/csv" hidden></label>
+        <button class="btn ghost" id="etpl">Download CSV template</button>
+        <span class="muted small">CSV columns: question, option_a–d, answer (A–D), fact</span>
+      </div>
+      <div id="eprev" class="small"></div>
+      <div class="row" style="margin-top:14px"><span class="spacer"></span><button class="btn primary big" id="es">Save set</button></div>
+    </div>`;
+    document.body.appendChild(m);
+    const close = () => m.remove();
+    $('#ex', m).onclick = close;
+    m.onclick = e => { if (e.target === m) close(); };
+    const preview = () => {
+      const {qs, errs} = parseText($('#et', m).value);
+      $('#eprev', m).innerHTML = `<span class="pill ${qs.length ? 'good' : ''}">${qs.length} questions ready</span>` +
+        (errs.length ? `<div class="banner err" style="margin-top:10px"><b>${errs.length} to fix:</b><br>${errs.slice(0, 8).map(esc).join('<br>')}${errs.length > 8 ? '<br>…' : ''}</div>` : '');
+      $('#es', m).disabled = !qs.length;
+      return {qs, errs};
+    };
+    $('#et', m).oninput = preview;
+    $('#etpl', m).onclick = () => downloadText('question-set-template.csv', CSV_TEMPLATE);
+    $('#ef', m).onchange = async e => {
+      const file = e.target.files[0]; if (!file) return;
+      const {qs, errs} = parseCSV(await file.text());
+      $('#et', m).value = toText(qs);
+      if (!$('#en', m).value) $('#en', m).value = file.name.replace(/\.csv$/i, '');
+      preview();
+      if (errs.length) $('#eprev', m).insertAdjacentHTML('beforeend', `<div class="banner err" style="margin-top:10px"><b>Skipped ${errs.length} CSV rows:</b><br>${errs.slice(0, 8).map(esc).join('<br>')}</div>`);
+    };
+    $('#es', m).onclick = () => {
+      const {qs, errs} = preview(); if (!qs.length) return;
+      if (errs.length && !confirm(`${errs.length} question(s) have problems and will be left out. Save the other ${qs.length}?`)) return;
+      const name = $('#en', m).value.trim() || 'My question set';
+      const list = this.customSets();
+      const id = set?.id && !set.builtin ? set.id : 'c' + Date.now().toString(36);
+      const rec = {id, name, desc:`Your set · saved ${new Date().toLocaleDateString()}`, questions:qs};
+      const i = list.findIndex(x => x.id === id);
+      if (i >= 0) list[i] = rec; else list.unshift(rec);
+      LS.set('los_custom_sets', list);
+      this.setId = id; this.saveSettings(); close(); this.renderSetup();
+    };
+    preview();
+  },
+
+  /* ---------- Game lifecycle ---------- */
+  async createGame(){
+    const set = this.currentSet(); const s = this.settings;
+    let qs = s.shuffle ? shuffle(set.questions) : set.questions.slice();
+    if (s.maxQ) qs = qs.slice(0, s.maxQ);
+    if (!qs.length) return alert('This set has no questions.');
+    $('#create').disabled = true; $('#create').textContent = 'Creating…';
+    try{
+      let pin;
+      for (let i = 0; i < 20; i++){
+        pin = String(Math.floor(100000 + Math.random() * 900000));
+        if (!(await store.get(`${ROOT}/${pin}/hostUid`))) break;
+      }
+      await store.set(`${ROOT}/${pin}/hostUid`, store.uid);
+      await store.set(`${ROOT}/${pin}/state`, {phase:'lobby', title:set.name, total:qs.length, duration:s.timer, joined:0, createdAt:store.TS});
+      this.session = {pin, title:set.name, qs, settings:{...s}, i:-1};
+      LS.set('los_host_session', this.session);
+      this.attach();
+    }catch(e){
+      console.error(e);
+      alert('Could not create the game. Check the Firebase config and database rules.');
+      this.renderSetup();
+    }
+  },
+  base(){ return `${ROOT}/${this.session.pin}`; },
+  saveSession(){ LS.set('los_host_session', this.session); },
+
+  attach(){
+    this.unsubs.forEach(u => u()); this.unsubs = [];
+    this.unsubs.push(store.on(`${this.base()}/state`, st => { this.st = st; if (st?.qKey) this.watchAnswers(st.qKey); this.draw(); }));
+    this.unsubs.push(store.on(`${this.base()}/players`, p => { this.players = p || {}; this.onPlayers(); this.draw(); }));
+    if (!this._keys){
+      this._keys = true;
+      addEventListener('keydown', e => {
+        if (!this.st || /input|textarea/i.test(e.target.tagName)) return;
+        if (e.key === ' ' || e.key === 'Enter' || e.key === 'ArrowRight'){ e.preventDefault(); $('#primary')?.click(); }
+      });
+    }
+    cancelAnimationFrame(this.raf);
+    const loop = () => { this.tick(); this.raf = requestAnimationFrame(loop); };
+    loop();
+  },
+  watchAnswers(qKey){
+    if (this.ansKey === qKey) return;
+    this.ansKey = qKey; this.answers = {};
+    this.ansUnsub?.();
+    this.ansUnsub = store.on(`${this.base()}/answers/${qKey}`, a => { this.answers = a || {}; this.drawCounts(); });
+  },
+  onPlayers(){
+    const st = this.st; if (!st) return;
+    const upd = {};
+    if (st.phase === 'lobby'){
+      const n = Object.keys(this.players).length;
+      if (n !== st.joined && !this._joinTimer){
+        this._joinTimer = setTimeout(() => {
+          this._joinTimer = null;
+          if (this.st?.phase === 'lobby') store.update({[`${this.base()}/state/joined`]: Object.keys(this.players).length});
+        }, 1500);
+      }
+    } else {
+      for (const [id, p] of Object.entries(this.players)) if (p.alive == null && !p.late) { upd[`${this.base()}/players/${id}/alive`] = false; upd[`${this.base()}/players/${id}/late`] = true; }
+      if (Object.keys(upd).length) store.update(upd);
+    }
+  },
+  aliveIds(){ return Object.entries(this.players).filter(([, p]) => p.alive === true).map(([id]) => id); },
+
+  async start(){
+    const ids = Object.keys(this.players);
+    if (!ids.length && !confirm('Nobody has joined yet. Start anyway?')) return;
+    const upd = {};
+    for (const id of ids){ upd[`${this.base()}/players/${id}/alive`] = true; upd[`${this.base()}/players/${id}/t`] = 0; }
+    upd[`${this.base()}/state/joined`] = ids.length;
+    await store.update(upd);
+    this.goQuestion(0);
+  },
+  async goQuestion(i){
+    const s = this.session; const q = s.qs[i];
+    s.i = i; this.saveSession(); this.locking = false;
+    await store.set(`${this.base()}/state`, {
+      phase:'question', title:s.title, total:s.qs.length, duration:s.settings.timer, joined:this.st?.joined || 0,
+      qKey:'q' + i, qNum:i + 1, q:{text:q.q, opts:q.o}, startedAt:store.TS,
+      aliveCount:this.aliveIds().length, isLast:false,
+    });
+  },
+  remaining(){
+    const st = this.st; if (!st || st.phase !== 'question' || typeof st.startedAt !== 'number') return 0;
+    return Math.max(0, st.startedAt + st.duration * 1000 - store.now());
+  },
+  tick(){
+    const st = this.st; if (!st || st.phase !== 'question') return;
+    const rem = this.remaining(); const dur = st.duration * 1000;
+    const ring = $('#ring');
+    if (ring){ const c = 2 * Math.PI * 42; ring.style.strokeDashoffset = c * (1 - rem / dur); ring.style.stroke = rem < 4000 ? 'var(--bad)' : 'var(--accent2)'; }
+    const sec = $('#tsec'); if (sec) sec.textContent = Math.ceil(rem / 1000);
+    if (rem <= 0) return this.lock();
+    if (this.session.settings.earlyEnd){
+      const alive = this.aliveIds();
+      if (alive.length && alive.every(id => this.answers[id]) && st.startedAt + 1500 < store.now()) this.lock();
+    }
+  },
+  async lock(){
+    if (this.locking) return; this.locking = true;
+    const st = this.st;
+    try{
+      await store.update({[`${this.base()}/state/phase`]:'locked'});
+      await this.reveal(st);
+    }catch(e){ console.error(e); this.locking = false; alert('Could not reveal. Check your connection, then press Reveal.'); }
+  },
+  async reveal(st){
+    const s = this.session; const q = s.qs[s.i]; const base = this.base();
+    const ans = (await store.get(`${base}/answers/${st.qKey}`)) || {};
+    const players = this.players; const alive = this.aliveIds();
+    const correct = q.a; const dur = st.duration * 1000; const started = st.startedAt;
+    const dist = q.o.map(() => 0); const right = [], wrong = []; let answeredAlive = 0;
+    for (const id of alive){
+      const a = ans[id];
+      if (a && typeof a.c === 'number'){ dist[a.c] = (dist[a.c] || 0) + 1; answeredAlive++; }
+      (a && a.c === correct ? right : wrong).push(id);
+    }
+    let crowdRight = 0, crowdTotal = 0;
+    for (const [id, a] of Object.entries(ans)){ const p = players[id]; if (p && p.alive !== true){ crowdTotal++; if (a.c === correct) crowdRight++; } }
+    const massSave = alive.length > 0 && right.length === 0;
+    const rt = id => { const a = ans[id]; if (!a || typeof a.at !== 'number') return dur; return Math.max(0, Math.min(dur, a.at - started)); };
+    const upd = {};
+    if (massSave) for (const id of alive) upd[`${base}/players/${id}/t`] = (players[id].t || 0) + rt(id);
+    else {
+      for (const id of right) upd[`${base}/players/${id}/t`] = (players[id].t || 0) + rt(id);
+      for (const id of wrong){ upd[`${base}/players/${id}/alive`] = false; upd[`${base}/players/${id}/out`] = st.qNum; }
+    }
+    const aliveAfter = massSave ? alive.length : right.length;
+    const isLast = s.i >= s.qs.length - 1 || aliveAfter <= s.settings.stopAt;
+    Object.assign(upd, {
+      [`${base}/state/phase`]:'reveal', [`${base}/state/correct`]:correct, [`${base}/state/fact`]:q.f || '',
+      [`${base}/state/aliveCount`]:aliveAfter, [`${base}/state/isLast`]:isLast,
+      [`${base}/state/stats`]:{dist, aliveBefore:alive.length, aliveAfter, out:massSave ? 0 : wrong.length, noAnswer:alive.length - answeredAlive, crowdRight, crowdTotal, massSave},
+    });
+    await store.update(upd);
+  },
+  async skip(){
+    if (!confirm('Skip this question? Nobody will be eliminated for it.')) return;
+    this.locking = true;
+    const s = this.session;
+    if (s.i >= s.qs.length - 1) return this.finish();
+    this.goQuestion(s.i + 1);
+  },
+  next(){
+    const st = this.st; const s = this.session;
+    if (st.isLast) return this.finish();
+    this.goQuestion(s.i + 1);
+  },
+  async finish(){
+    const alive = this.aliveIds().map(id => ({id, n:this.players[id].n, t:this.players[id].t || 0})).sort((a, b) => a.t - b.t);
+    const outs = Object.entries(this.players).filter(([, p]) => p.alive === false && !p.late && p.out);
+    const maxOut = Math.max(0, ...outs.map(([, p]) => p.out));
+    const runners = outs.filter(([, p]) => p.out === maxOut).map(([, p]) => p.n).slice(0, 8);
+    await store.update({
+      [`${this.base()}/state/phase`]:'final',
+      [`${this.base()}/state/winners`]:alive.slice(0, 20),
+      [`${this.base()}/state/winnerCount`]:alive.length,
+      [`${this.base()}/state/runners`]:runners,
+      [`${this.base()}/state/runnersOut`]:maxOut,
+    });
+  },
+  kick(id){
+    const p = this.players[id]; if (!p) return;
+    if (confirm(`Remove “${p.n}” from the game?`)) store.remove(`${this.base()}/players/${id}`);
+  },
+  exportCSV(){
+    const rows = [['Name', 'Result', 'Out at question', 'Total answer time (s)']];
+    const list = Object.values(this.players).sort((a, b) => (b.alive === true) - (a.alive === true) || (b.out || 0) - (a.out || 0) || (a.t || 0) - (b.t || 0));
+    for (const p of list) rows.push([p.n, p.alive === true ? 'Winner' : p.late ? 'Joined late' : 'Out', p.alive === true ? '' : (p.out || ''), p.alive === true ? ((p.t || 0) / 1000).toFixed(2) : '']);
+    downloadText(`last-one-standing-${this.session.pin}.csv`, rows.map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(',')).join('\n'));
+  },
+  newGame(){
+    LS.del('los_host_session');
+    this.unsubs.forEach(u => u()); this.ansUnsub?.(); this.ansKey = null;
+    cancelAnimationFrame(this.raf);
+    this.st = null; this.players = {}; this.session = null; this.resumable = null; this.lastKey = null;
+    this.renderSetup();
+  },
+
+  /* ---------- Stage rendering ---------- */
+  joinUrl(){ return location.origin + location.pathname + '?pin=' + this.session.pin; },
+  draw(){
+    if (this._drawQueued) return;
+    this._drawQueued = true;
+    requestAnimationFrame(() => { this._drawQueued = false; this.drawNow(); });
+  },
+  drawNow(){
+    const st = this.st; if (!st || !this.session) return;
+    const key = st.phase + '|' + (st.qKey || '') + '|' + (st.stats ? 'r' : '');
+    if (key === this.lastKey){ this.drawCounts(); return; }
+    this.lastKey = key;
+    const n = Object.keys(this.players).length; const aliveN = this.aliveIds().length;
+    const top = `<div class="topbar">
+      <div class="brand" style="font-size:22px"><span class="dot"></span>Last One Standing</div>
+      <span class="muted">${esc(st.title)}</span><span class="spacer"></span>
+      ${st.phase !== 'lobby' ? `<span class="pill good" id="c-alive">${aliveN} standing</span>` : ''}
+      <span class="pill" id="c-total">${n} players</span>
+      <div class="pin">PIN <b>${esc(this.session.pin)}</b></div>
+      <button class="btn ghost" id="fs" title="Full screen">⛶</button>
+    </div>`;
+    let body = '', controls = '';
+    if (st.phase === 'lobby'){
+      const url = this.joinUrl();
+      body = `<div class="lobby">
+        <div class="joinbox">
+          <div class="lbl">Scan to join, or go to</div>
+          <div class="url">${esc(url.replace(/^https?:\/\//, '').replace(/\?pin=.*/, ''))}</div>
+          <div class="lbl">Game PIN</div><div class="bigpin">${esc(this.session.pin)}</div>
+          <div id="qr"></div>
+        </div>
+        <div>
+          <div class="count" id="c-big">${n}</div>
+          <div style="font-size:24px;font-weight:700" class="muted">players in the room</div>
+          <div class="chips" id="chips"></div>
+        </div>
+      </div>`;
+      controls = `<button class="btn primary big" id="primary">Start game ▶</button>
+        <button class="btn ghost" id="rules">Show rules</button>
+        ${store.mode === 'demo' ? `<a class="btn ghost" href="${esc(url)}" target="_blank" rel="noopener">Open a test player tab ↗</a>` : ''}
+        <span class="spacer"></span><button class="btn ghost" id="quit">Cancel game</button>`;
+    } else if (st.phase === 'question' || st.phase === 'locked'){
+      const c = 2 * Math.PI * 42;
+      body = `<div class="qhead">
+          <div class="timer"><svg width="96" height="96"><circle cx="48" cy="48" r="42" stroke="var(--card)" stroke-width="10" fill="none"/><circle id="ring" cx="48" cy="48" r="42" stroke="var(--accent2)" stroke-width="10" fill="none" stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="0"/></svg><div class="sec" id="tsec">${st.phase === 'locked' ? '0' : st.duration}</div></div>
+          <div><div class="qnum">Question ${st.qNum} of ${st.total}</div><div class="muted" style="font-weight:600">${st.aliveCount} still standing · answer to survive</div></div>
+        </div>
+        <div class="qtext">${esc(st.q?.text)}</div>
+        <div class="opts">${(st.q?.opts || []).map((o, i) => `<div class="opt ${LETTERS[i]}"><span class="sh">${SHAPES[i]}</span><span>${esc(o)}</span></div>`).join('')}</div>
+        <div class="meter"><span id="c-ans">0 / ${st.aliveCount}</span><div class="track"><div class="fill" id="c-fill"></div></div><span class="muted" id="c-crowd"></span></div>`;
+      controls = st.phase === 'locked'
+        ? `<button class="btn primary big" disabled>Revealing…</button>`
+        : `<button class="btn primary big" id="primary">Reveal now</button><button class="btn ghost" id="skip">Skip question</button><span class="spacer"></span><button class="btn ghost" id="end">End game</button>`;
+    } else if (st.phase === 'reveal'){
+      const S = st.stats || {}; const tot = Math.max(1, (S.dist || []).reduce((a, b) => a + b, 0));
+      const survivors = S.aliveAfter <= 30 ? this.aliveIds().map(id => this.players[id].n) : [];
+      body = `
+        <div class="qnum">Question ${st.qNum} of ${st.total}</div>
+        <div class="qtext" style="font-size:clamp(22px,3vw,40px)">${esc(st.q?.text)}</div>
+        <div class="opts">${(st.q?.opts || []).map((o, i) => `<div class="opt ${LETTERS[i]} ${i === st.correct ? 'win' : 'fade'}"><span class="sh">${i === st.correct ? '✓' : SHAPES[i]}</span><span>${esc(o)}</span><span class="cnt">${S.dist?.[i] || 0}</span><div class="bar" data-w="${100 * (S.dist?.[i] || 0) / tot}"></div></div>`).join('')}</div>
+        ${S.massSave ? `<div class="save">🛟 Mass save! Every survivor missed this one, so nobody is out this round.</div>` : ''}
+        <div class="statrow">
+          <div class="stat out"><div class="v">−${S.out || 0}</div><div class="l">eliminated${S.noAnswer ? ` (${S.noAnswer} didn’t answer)` : ''}</div></div>
+          <div class="stat alive"><div class="v">${S.aliveAfter}</div><div class="l">still standing</div></div>
+          ${S.crowdTotal ? `<div class="stat"><div class="v">${Math.round(100 * S.crowdRight / S.crowdTotal)}%</div><div class="l">of the crowd got it right</div></div>` : ''}
+        </div>
+        ${st.fact ? `<div class="fact"><b>Did you know?</b> ${esc(st.fact)}</div>` : ''}
+        ${survivors.length ? `<div class="names">${survivors.map(n => `<span>${esc(n)}</span>`).join('')}</div>` : ''}`;
+      controls = `<button class="btn primary big" id="primary">${st.isLast ? 'Show the winners 🏆' : 'Next question ▶'}</button>
+        <span class="spacer"></span>${st.isLast ? '' : `<button class="btn ghost" id="end">End game now</button>`}`;
+    } else if (st.phase === 'final'){
+      const W = st.winners || []; const wc = st.winnerCount || 0;
+      body = `<div class="final">
+        <div class="trophy">🏆</div>
+        ${wc === 0 ? `<div class="winner">No survivors!</div>` : wc === 1 ? `<div class="muted" style="font-size:24px;font-weight:700">Last one standing</div><div class="winner">${esc(W[0].n)}</div>` : `<div class="muted" style="font-size:24px;font-weight:700">${wc} players still standing</div><div class="winner" style="font-size:clamp(36px,6vw,80px)">${esc(W[0].n)} wins on speed</div>`}
+        ${wc > 1 ? `<div class="wlist">${W.slice(0, 10).map((w, i) => `<div><span>${i + 1}.</span><span>${esc(w.n)}</span><span>${fmtSec(w.t)}</span></div>`).join('')}</div>` : ''}
+        ${st.runners?.length ? `<p class="muted" style="font-size:18px;margin-top:22px">Fell at the last hurdle (Q${st.runnersOut}): ${st.runners.map(esc).join(', ')}</p>` : ''}
+      </div>`;
+      controls = `<span class="spacer"></span><button class="btn ghost" id="csv">Download results (CSV)</button><button class="btn primary" id="new">New game</button><span class="spacer"></span>`;
+    }
+    app.innerHTML = `<div class="stage">${top}<div class="stagebody">${body}</div><div class="controls">${controls}</div></div>`;
+    // wire up
+    $('#fs').onclick = () => document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen?.();
+    const on = (id, fn) => { const el = $('#' + id); if (el) el.onclick = fn; };
+    if (st.phase === 'lobby'){
+      on('primary', () => this.start());
+      on('rules', () => { const m = document.createElement('div'); m.className = 'modal'; m.innerHTML = `<div class="card" style="font-size:22px"><h2 style="margin-bottom:12px">How to play</h2>${RULES_HTML}<button class="btn primary" style="margin-top:12px">Got it</button></div>`; m.onclick = () => m.remove(); document.body.appendChild(m); });
+      on('quit', () => { if (confirm('Cancel this game?')) this.newGame(); });
+      const qr = $('#qr'); if (qr && window.QRCode){ new QRCode(qr, {text:this.joinUrl(), width:220, height:220, colorDark:'#0c111d', colorLight:'#ffffff', correctLevel:QRCode.CorrectLevel.M}); }
+      this._chipsShown = '';
+    }
+    if (st.phase === 'question'){ on('primary', () => this.lock()); on('skip', () => this.skip()); on('end', () => { if (confirm('End the game now? Everyone still standing wins.')) this.finish(); }); }
+    if (st.phase === 'reveal'){
+      on('primary', () => this.next()); on('end', () => { if (confirm('End the game now? Everyone still standing wins.')) this.finish(); });
+      requestAnimationFrame(() => app.querySelectorAll('.bar[data-w]').forEach(b => b.style.width = b.dataset.w + '%'));
+    }
+    if (st.phase === 'final'){ on('csv', () => this.exportCSV()); on('new', () => this.newGame()); }
+    this.drawCounts();
+  },
+  drawCounts(){
+    const st = this.st; if (!st) return;
+    const n = Object.keys(this.players).length; const alive = this.aliveIds();
+    const set = (id, v) => { const el = $('#' + id); if (el && el.textContent !== String(v)) el.textContent = v; };
+    set('c-total', n + ' players'); set('c-big', n);
+    if (st.phase !== 'lobby') set('c-alive', alive.length + ' standing');
+    if (st.phase === 'lobby'){
+      const chips = $('#chips');
+      if (chips){
+        const list = Object.entries(this.players).sort((a, b) => (b[1].j || 0) - (a[1].j || 0)).slice(0, 60);
+        const sig = list.map(([id]) => id).join(',');
+        if (sig !== this._chipsShown){
+          this._chipsShown = sig;
+          chips.innerHTML = list.map(([id, p]) => `<span class="chip">${esc(p.n)}<button data-kick="${esc(id)}" title="Remove">×</button></span>`).join('') + (n > 60 ? `<span class="chip muted">+${n - 60} more</span>` : '');
+          chips.querySelectorAll('[data-kick]').forEach(b => b.onclick = () => this.kick(b.dataset.kick));
+        }
+      }
+    }
+    if (st.phase === 'question' || st.phase === 'locked'){
+      const aliveAns = alive.filter(id => this.answers[id]).length;
+      const crowd = Object.keys(this.answers).length - aliveAns;
+      set('c-ans', `${aliveAns} / ${alive.length} answered`);
+      const f = $('#c-fill'); if (f) f.style.width = (alive.length ? 100 * aliveAns / alive.length : 0) + '%';
+      set('c-crowd', crowd > 0 ? `+${crowd} crowd` : '');
+    }
+  },
+};
+
+/* ===================== Boot ===================== */
+(async () => {
+  try{
+    store = FIREBASE_CONFIG ? await makeFirebaseStore(FIREBASE_CONFIG) : makeDemoStore();
+  }catch(e){
+    console.error(e);
+    app.innerHTML = `<div class="wrap"><div class="banner err">Could not connect to the game server. Check the Firebase config, that Anonymous sign-in is enabled, and your internet connection.</div></div>`;
+    return;
+  }
+  if (params.has('host')) Host.init();
+  else Player.init((params.get('pin') || '').replace(/\D/g, ''));
+})();
+</script>
+</body>
+</html>

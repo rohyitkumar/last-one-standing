@@ -1,0 +1,30 @@
+{
+  "rules": {
+    "los": {
+      "$pin": {
+        ".read": "auth != null",
+        "hostUid": {
+          ".write": "auth != null && (!data.exists() || data.val() === auth.uid)",
+          ".validate": "newData.val() === auth.uid"
+        },
+        "state": {
+          ".write": "auth != null && root.child('los').child($pin).child('hostUid').val() === auth.uid"
+        },
+        "players": {
+          "$uid": {
+            ".write": "auth != null && (root.child('los').child($pin).child('hostUid').val() === auth.uid || ($uid === auth.uid && !data.exists() && newData.exists()))",
+            ".validate": "newData.child('n').isString() && newData.child('n').val().length >= 1 && newData.child('n').val().length <= 24"
+          }
+        },
+        "answers": {
+          "$q": {
+            "$uid": {
+              ".write": "auth != null && $uid === auth.uid && !data.exists() && root.child('los').child($pin).child('state/phase').val() === 'question' && root.child('los').child($pin).child('state/qKey').val() === $q",
+              ".validate": "newData.hasChildren(['c', 'at']) && newData.child('c').isNumber() && newData.child('at').val() === now"
+            }
+          }
+        }
+      }
+    }
+  }
+}
