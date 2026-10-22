@@ -170,26 +170,24 @@ pre.fmt{background:var(--bg2);border-radius:10px;padding:10px 12px;font-size:12p
    1) Paste your Firebase web config below (see README) to run a real event.
    2) Leave it as null to run in DEMO mode (works across tabs in one browser).
    ========================================================================= */
-const firebaseConfig = {
-  apiKey: "AIzaSyC7pauJCewmooqZTF9SyHccgqLovf38mtQ",
-  authDomain: "last-one-standing-6cf54.firebaseapp.com",
-  databaseURL: "https://last-one-standing-6cf54-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "last-one-standing-6cf54",
-  storageBucket: "last-one-standing-6cf54.firebasestorage.app",
-  messagingSenderId: "657574344580",
-  appId: "1:657574344580:web:09ab4e13763f60de644fd1"
-};
 
-// Initialize Firebase
+   const FIREBASE_CONFIG = {
+     apiKey: "…",
+     authDomain: "…",
+     databaseURL: "https://…asia-southeast1.firebasedatabase.app",
+     projectId: "…",
+     appId: "…"
+   };
+
+/* Example:
 const FIREBASE_CONFIG = {
-  apiKey: "your value",
-  authDomain: "your value",
+  apiKey: "AIza...",
+  authDomain: "your-project.firebaseapp.com",
   databaseURL: "https://your-project-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "your value",
-  storageBucket: "your value",
-  messagingSenderId: "your value",
-  appId: "your value"
+  projectId: "your-project",
+  appId: "1:123:web:abc"
 };
+*/
 const ROOT = 'los';
 const FB_VERSION = '10.12.2';
 
